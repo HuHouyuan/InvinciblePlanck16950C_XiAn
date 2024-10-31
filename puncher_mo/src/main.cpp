@@ -1,10 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
-/*                                                                            */
+/*    Author:       Morgan Hu                                                 */
 /*----------------------------------------------------------------------------*/
 
 #include "autonomous.h"
@@ -18,8 +13,6 @@
 using namespace vex;
 using namespace Eigen;
 competition Competition;
-
-
 
 void runAuto()
 {
