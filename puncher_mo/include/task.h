@@ -8,37 +8,35 @@
 #include <eigen-3.4.0/Eigen/Dense>
 using namespace Eigen;
 
+float vch3 = false;
+float vch4 = false;
+float vch1 = false;
 
-
-float vch3 = 0;
-float vch4 = 0;
-float vch1 = 0;
-
-bool lL1 = 0;
-bool lR1 = 0;
-bool lR2 = 0;
-bool lL2 = 0;
-bool lBX = 0;
-bool lBY = 0;
-bool lBB = 0;
-bool lUP = 0;
-bool lBA = 0;
-bool lRight = 0;
-bool lDown = 0;
-bool lLEFT = 0;
-bool isGod = 0;
-bool isAim = 0;
-bool isOpen = 0;
-bool currentBool = 0;
-bool special = 0;
-bool criticalAdd = 0;
-bool ManualShoot = 0;
-bool chooseRed = 0;
-bool chooseBlue = 0;
-bool fifteen = 0;
-bool notBad = 0;
-bool afraid = 0;
-int manualPuncherSet = 0;
+bool lL1 = false;
+bool lR1 = false;
+bool lR2 = false;
+bool lL2 = false;
+bool lBX = false;
+bool lBY = false;
+bool lBB = false;
+bool lUP = false;
+bool lBA = false;
+bool lRight = false;
+bool lDown = false;
+bool lLEFT = false;
+bool isGod = false;
+bool isAim = false;
+bool isOpen = false;
+bool currentBool = false;
+bool special = false;
+bool criticalAdd = false;
+bool ManualShoot = false;
+bool chooseRed = false;
+bool chooseBlue = false;
+bool fifteen = false;
+bool notBad = false;
+bool afraid = false;
+int manualPuncherSet = false;
 
 void punch()
 {
@@ -47,7 +45,7 @@ void punch()
   inAuto = 1;
   intake_setspeed(-100);
   delay(300);
-  // open the pneumatic
+  // activate the pneumatic & shoot the disks
   puncher_air.set(1);
   puncher_setspeed(-5);
   // cout<<puncherTarget<<endl;
@@ -129,7 +127,7 @@ int ShootJudger()
     // target vector, from the bot, to the goal
     toRed = Vector2f(redShoot[0] - corX, redShoot[1] - corY).norm();
     toBlue = Vector2f(blueShoot[0] - corX, blueShoot[1] - corY).norm();
-    // during the 15 sec autonomous period
+    // during the 15 sec autonomous period, there's only one target to aim at
     if (fifteen)
     {
       shootPoint = Vector2f(-132, 132);
@@ -142,7 +140,7 @@ int ShootJudger()
       else
         shootPoint = redShoot;
     }
-    // during the autonomous period of the skill competition
+    // during the autonomous period of the skill competition, auto aim at the nearest target
     else
     {
       if (toRed < toBlue)
@@ -156,7 +154,7 @@ int ShootJudger()
   return 0;
 }
 
-// updating puncherTarget automatically / manually
+// updating the strength of the puncher (puncher target) automatically or manually
 int PuncherEncControl()
 {
   delay(100);
@@ -187,7 +185,7 @@ int PuncherEncControl()
   return 0;
 }
 
-// updating the globalRot, which stands for the global orientation of the bot. globalRot is going to be useful in some functions
+// updating the globalRot, which represents the orientation of the bot on the coordinate plane.
 int updateGlobalRot()
 {
   delay(100);
@@ -257,9 +255,9 @@ int updateCOR()
   return 0;
 }
 
-/* this function literally enables the bot to look at a specific point. the direc parameter is a paramter not used anymore
-   after a version of update. But due to previous routes in the autopath already used the old version, the parameter is kept
-   but not used in the function. */
+/* this function literally enables the bot to look at a specific point. The direc parameter is a paramter not used anymore
+   after a version of update. But because previous routes in the autopath already used the old version, the parameter is kept,
+   but it no longer serves a function. The target paramter represents the target point to look at*/
 
 float LookAt(float direc, Vector2f target)
 {
@@ -320,7 +318,7 @@ int giveSpeedInAim()
   arrived = error == 0;
   // the distance from the bot to the goal
   float predis = sqrt((shootPoint[0] - corX) * (shootPoint[0] - corX) + (shootPoint[1] - corY) * (shootPoint[1] - corY));
-  // Simply put, if we wish to shoot the disks into the goal while moving, we need to aim at point around the goal according to the bot's velocity
+  // Simply put, if we wish to shoot the disks into the goal while moving, we need to aim at a point near the goal taking the bot's velocity into consideration
   fakeShootPoint = shootPoint - globalspeed * (16.3 + predis * 0.1);
   while (1)
   {
@@ -382,8 +380,8 @@ int giveSpeedInAim()
 /* 
 1. If button B is pressed, the bot switch to the god mode, in which users can control the bot using a thrid person
 perspective. For instance, normally, if the car is facing east and we push the stick forward, the car goes forward in
-its direction, which is going towards east. However, in god mode, when users push the stick forward, the car instead
-moves towards north, which is defined by us as the asbolute positive y direction. Therefore, in god mode, users control
+its direction, which ends up going towards east. However, in god mode, when users push the stick forward, the car
+moves towards north, which is defined by us as the positive y direction on the coordinate. Therefore, in god mode, users control
 the bot through using absolute direction instead of relative direction
 2. If button X is pressed, the bot goes into auto aim mode, in which the bot auto aims at the goal
 3. The last mode is the normal controlling mode
